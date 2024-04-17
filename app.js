@@ -1,8 +1,6 @@
 const express = require("express");
 const sequelize = require("./db");
-const User = require("./models/User");
-const { hash } = require("bcrypt");
-const { where } = require("sequelize");
+const User = require("./models/User")(sequelize);
 
 const app = express();
 
@@ -82,4 +80,10 @@ app.get("/userinfo", verifyToken, async (req, res) => {
     console.error("Error fetching user info:", error);
     return res.status(500).json({ message: "Server Error" });
   }
+});
+
+// Start server
+const PORT = process.env.Port || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
