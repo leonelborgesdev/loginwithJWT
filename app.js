@@ -54,3 +54,19 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+//Middleware to verify JWT token
+function verifyToken(req, res, next) {
+  const token = req.header("Authorization");
+  if (!token) {
+    return res.status(401).json({ message: "Access Denied" });
+  }
+  try {
+    const decoded = jwt.verify(token.split(" ")[1], "your_secret_key_here");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    res.status(401).json({ message: "Invalid Token" });
+  }
+}
