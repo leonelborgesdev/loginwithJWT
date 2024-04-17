@@ -70,3 +70,16 @@ function verifyToken(req, res, next) {
     res.status(401).json({ message: "Invalid Token" });
   }
 }
+//Protected route to get user info
+app.get("/userinfo", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.json({ user });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+});
