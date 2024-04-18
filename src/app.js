@@ -1,6 +1,7 @@
 const express = require("express");
 const sequelize = require("./db");
 const User = require("./models/User")(sequelize);
+const bcrypt = require("bcrypt");
 
 const app = express();
 
