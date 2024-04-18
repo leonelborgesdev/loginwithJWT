@@ -2,6 +2,11 @@ const express = require("express");
 const sequelize = require("./db");
 const User = require("./models/User")(sequelize);
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { config } = require("dotenv");
+config();
+
+const { SECRET_KEY } = process.env;
 
 const app = express();
 
@@ -39,11 +44,11 @@ app.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
-    const isPasswordMatch = await bcrypt.compar(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({ message: " Invalid Credentials " });
     }
-    const token = jwt.sing({ userId: user.id }, "your_secret_key_here", {
+    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: "1h",
     });
     res.json({ token });
