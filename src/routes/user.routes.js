@@ -1,13 +1,16 @@
-const sequelize = require("./db");
-const User = require("./models/User")(sequelize);
+const express = require("express");
+const sequelize = require("../db");
+const User = require("../models/User.js")(sequelize);
 const bcrypt = require("bcrypt");
-const { validarJWT } = require("../src/middlewares");
+const { validarJWT } = require("../middlewares");
 const jwt = require("jsonwebtoken");
 const { config } = require("dotenv");
 config();
 
+const router = express.Router();
+
 //User Registration
-app.post("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -24,7 +27,7 @@ app.post("/register", async (req, res) => {
 });
 
 //User Login
-app.post("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
@@ -48,7 +51,7 @@ app.post("/login", async (req, res) => {
 //Middleware to verify JWT token
 
 //Protected route to get user info
-app.get("/userinfo", validarJWT, async (req, res) => {
+router.get("/userinfo", validarJWT, async (req, res) => {
   try {
     const user = await User.findByPk(req.user.userId);
     if (!user) {
@@ -60,3 +63,5 @@ app.get("/userinfo", validarJWT, async (req, res) => {
     return res.status(500).json({ message: "Server Error" });
   }
 });
+
+module.exports = router;
