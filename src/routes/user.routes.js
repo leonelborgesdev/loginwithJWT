@@ -5,26 +5,13 @@ const bcrypt = require("bcrypt");
 const { validarJWT } = require("../middlewares");
 const jwt = require("jsonwebtoken");
 const { config } = require("dotenv");
+const { registerUser } = require("../controllers/user.controllers.js");
 config();
 
 const router = express.Router();
 
 //User Registration
-router.post("/register", async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
-    res.status(201).json({ message: "User registered successfully", user });
-  } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
+router.post("/register", registerUser);
 
 //User Login
 router.post("/login", async (req, res) => {
