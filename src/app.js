@@ -2,11 +2,10 @@ const express = require("express");
 const sequelize = require("./db");
 const User = require("./models/User")(sequelize);
 const bcrypt = require("bcrypt");
+const { validarJWT } = require("../src/middlewares");
 const jwt = require("jsonwebtoken");
 const { config } = require("dotenv");
 config();
-
-const { SECRET_KEY } = process.env;
 
 const app = express();
 
@@ -59,22 +58,9 @@ app.post("/login", async (req, res) => {
 });
 
 //Middleware to verify JWT token
-function verifyToken(req, res, next) {
-  const token = req.header("Authorization");
-  if (!token) {
-    return res.status(401).json({ message: "Access Denied" });
-  }
-  try {
-    const decoded = jwt.verify(token.split(" ")[1], "your_secret_key_here");
-    req.user = decoded;
-    next();
-  } catch (error) {
-    console.error("Error verifying token:", error);
-    res.status(401).json({ message: "Invalid Token" });
-  }
-}
+
 //Protected route to get user info
-app.get("/userinfo", verifyToken, async (req, res) => {
+app.get("/userinfo", validarJWT, async (req, res) => {
   try {
     const user = await User.findByPk(req.user.userId);
     if (!user) {
