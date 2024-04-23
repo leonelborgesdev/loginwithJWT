@@ -5,7 +5,10 @@ const bcrypt = require("bcrypt");
 const { validarJWT } = require("../middlewares");
 const jwt = require("jsonwebtoken");
 const { config } = require("dotenv");
-const { registerUser } = require("../controllers/user.controllers.js");
+const {
+  registerUser,
+  loginUser,
+} = require("../controllers/user.controllers.js");
 config();
 
 const router = express.Router();
@@ -14,26 +17,7 @@ const router = express.Router();
 router.post("/register", registerUser);
 
 //User Login
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      return res.status(400).json({ message: " Invalid Credentials " });
-    }
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
-    res.json({ token });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
+router.post("/login", loginUser);
 
 //Middleware to verify JWT token
 
