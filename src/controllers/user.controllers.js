@@ -1,8 +1,6 @@
-const express = require("express");
 const sequelize = require("../db");
 const User = require("../models/User.js")(sequelize);
 const bcrypt = require("bcrypt");
-const { validarJWT } = require("../middlewares");
 const jwt = require("jsonwebtoken");
 const { config } = require("dotenv");
 config();
