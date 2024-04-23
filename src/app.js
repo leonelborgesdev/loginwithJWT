@@ -1,9 +1,6 @@
 const express = require("express");
 const sequelize = require("./db");
-const User = require("./models/User")(sequelize);
-const bcrypt = require("bcrypt");
-const { validarJWT } = require("../src/middlewares");
-const jwt = require("jsonwebtoken");
+const routes = require("./routes");
 const { config } = require("dotenv");
 config();
 
@@ -17,6 +14,7 @@ sequelize
   .catch((err) => console.error("Error syncing database:", err));
 
 app.use(express.json());
+app.use(routes);
 
 // Start server
 const PORT = process.env.PORT || 3000;
