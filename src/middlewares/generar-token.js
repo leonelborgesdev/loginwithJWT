@@ -1,4 +1,7 @@
 const jwt = require("jsonwebtoken");
+const { config } = require("dotenv");
+config();
+const { SECRET_KEY } = process.env;
 
 const generarToken = (user) => {
   const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
