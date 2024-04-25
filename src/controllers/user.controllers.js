@@ -1,10 +1,7 @@
 const sequelize = require("../db");
 const User = require("../models/User.js")(sequelize);
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { config } = require("dotenv");
-config();
-const { SECRET_KEY } = process.env;
+const { generarToken } = require("../middlewares");
 
 const userRegister = async (req, res) => {
   try {
@@ -33,9 +30,7 @@ const userLogin = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(400).json({ message: " Invalid Credentials " });
     }
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = generarToken(user);
     res.json({ token });
   } catch (error) {
     console.error("Error logging in:", error);
