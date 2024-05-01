@@ -25,9 +25,9 @@ const resetPasswordMail = async (req = request, res = response) => {
       });
     }
 
-    const link = `${process.env.URL_BASE}#/resetPassword/${user.id}/${token}`;
+    // const link = `${process.env.URL_BASE}#/resetPassword/${user.id}/${token}`;
 
-    //const link = `http://localhost:3000/#/resetPassword/${user.id}/${token}`
+    const link = `http://localhost:3000/#/resetPassword/${user.id}/${token}`;
     await sendMailResetPassword(
       email,
       "Cambio de Contraseña",
